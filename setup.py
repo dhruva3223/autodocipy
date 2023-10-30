@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="mypackage",
+    name="autodocipy",
     version="1.0",
     packages=find_packages(),
     install_requires=[
@@ -9,9 +9,9 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'mypackage-doc = mypackage.autodoc:generate_documentation',
-            'mypackage-readme = mypackage.autodoc:generate_readme',
-            'mypackage-offline = mypackage.thirdparty:main'
+            'autodocipy-doc = autodocipy.autodoc:generate_documentation',
+            'autodocipy-readme = autodocipy.autodoc:generate_readme',
+            'autodocipy-offline = autodocipy.thirdparty:main'
         ],
     },
 )
