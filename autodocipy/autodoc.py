@@ -5,7 +5,12 @@ import shutil
 import openai
 import argparse
 from dotenv import load_dotenv
+from langchain.llms import OpenAI
+from langchain.prompts import PromptTemplate
+from langchain.chains import LLMChain
 load_dotenv()
+
+TEMPLATE = "{text}\n\n\n Write a README.md using above information for github"
 
 class AutoDocPy:
     def __init__(self, source_dir, output_dir):
@@ -97,14 +102,10 @@ class AutoDocPy:
             text = file.read()
         if text is None:
             return
-        openai.api_key = os.getenv("OPENAI_KEY")
-        completion = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo", messages=[{"role": "user", "content": text+"\n\n\n Write a README.md using above information for github."}]
-        )
-        gpt_response = (
-            completion.get("choices", [{}])[0].get(
-                "message", {}).get("content", "").strip()
-        )
+        prompt = PromptTemplate(template=TEMPLATE, input_variables=["text"])
+        llm = OpenAI(openai_api_key=os.getenv("OPENAI_KEY"))
+        llm_chain = LLMChain(prompt=prompt, llm=llm)
+        gpt_response = llm_chain.run(text)
         with open("AUTODOCREADME.md", 'w') as output_file:
             output_file.write(gpt_response)
 
