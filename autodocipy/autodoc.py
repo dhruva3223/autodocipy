@@ -14,6 +14,9 @@ TEMPLATE = "{text}\n\n\n Prompt: Generate a README.md using above information fo
 
 class AutoDocPy:
     def __init__(self, source_dir, output_dir):
+        """
+        initalize source_dir, output_dir
+        """
         self.source_dir = source_dir
         self.output_dir = output_dir
 
