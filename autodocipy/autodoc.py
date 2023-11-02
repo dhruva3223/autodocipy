@@ -2,15 +2,15 @@ import os
 import re
 import os
 import shutil
-import openai
 import argparse
 from dotenv import load_dotenv
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
+
 load_dotenv()
 
-TEMPLATE = "{text}\n\n\n Write a README.md using above information for github"
+TEMPLATE = "{text}\n\n\n Prompt: Generate a README.md using above information for github."
 
 class AutoDocPy:
     def __init__(self, source_dir, output_dir):
@@ -68,6 +68,9 @@ class AutoDocPy:
 
 
     def generate_file_documentation(self, file_name, comments, folder_name):
+        """
+        Creates offline md documentation for each file in python folder
+        """
         module_dir = os.path.join(self.output_dir, folder_name)
         if not os.path.exists(module_dir):
             os.makedirs(module_dir)
@@ -91,12 +94,18 @@ class AutoDocPy:
                 output_file.write(f"{comment[:-3]}\n\n")
 
     def create_and_build_mkdocs_project(self, mkdocs_project_dir):
+        """
+        Configures mkdocs
+        """
         os.system(f"mkdocs new {mkdocs_project_dir}")
         shutil.rmtree(os.path.join(mkdocs_project_dir, 'docs')) 
         shutil.move(self.output_dir, os.path.join(mkdocs_project_dir, 'docs'))
         os.chdir(mkdocs_project_dir)
 
     def generate_readme(self):
+        """
+        Generates AUTODOCREADME.md using openai
+        """
         text = ""
         with open("autodoc/alldoc/all.md", 'r') as file:
             text = file.read()
@@ -110,12 +119,18 @@ class AutoDocPy:
             output_file.write(gpt_response)
 
 def generate_documentation():
+    """
+    initialize source_dir, output_dir and calls method generate_documentation in class AutoDocpy 
+    """
     source_dir = "."
     output_dir = "docs"
     autodoc = AutoDocPy(source_dir, output_dir)
     autodoc.generate_documentation()
 
 def generate_readme():
+    """
+    initialize source_dir, output_dir and calls method generate_readme in class AutoDocpy 
+    """
     source_dir = "."
     output_dir = "docs"
     autodoc = AutoDocPy(source_dir, output_dir)
@@ -124,7 +139,6 @@ def generate_readme():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("command", choices=["doc", "readme"], help="Command to execute")
-    # parser.add_argument("--key", help="OpenAI API Key")
     args = parser.parse_args()
     print(args)
     if args.command == "doc":

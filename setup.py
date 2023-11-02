@@ -5,7 +5,8 @@ setup(
     version="1.0",
     packages=find_packages(),
     install_requires=[
-        "openai",  # Add other dependencies as needed
+        "langchain",
+        "python-dotenv"
     ],
     entry_points={
         'console_scripts': [
